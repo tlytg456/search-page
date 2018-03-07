@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'dva';
 import { Button, Col, Input, Row } from 'antd';
 import styles from './IndexPage.less';
-import { Launcher } from 'react-chat-window'
 import request from '../utils/request';
 
 const Search = Input.Search;
@@ -25,66 +24,27 @@ class IndexPage extends React.Component {
     this.state = {
       messageList: [],
       searchValue: '',
+      description: 'Do Better'
     };
   }
 
+  componentWillMount() {
+    request('https://free-api.heweather.com/s6/weather?location=shanghai&key=1cde689da60f410fb5a18b45dba0cc76')
+      .then((content) => {
+        this.setDescription(content.data);
+      })
 
-  // _onMessageWasSent(message) {
-  //   this.setState({
-  //     messageList: [...this.state.messageList, message]
-  //   }, () => {
-  //     this._sendMessage(message)
-  //   })
-  // }
-  //
-  // _sendMessage = (message) => {
-  //   const myHeaders = new Headers({
-  //     // 'Access-Control-Allow-Origin': '*',
-  //     // 'Content-Type': 'application/json; charset=utf-8'
-  //     "Content-Type": "application/xhtml+xml; charset=GB2312"
-  //   });
-  //   window.console.log(message)
-  //   const url = 'http://openapi.tuling123.com/openapi/api/v2';
-  //   request(url,
-  //     {
-  //       // headers: HTTP_JSON_HEADER,
-  //       method: 'POST',
-  //       mode: "no-cors",
-  //       headers: myHeaders,
-  //       // headers: new Headers({
-  //       //   "Content-Type": "application/xhtml+xml; charset=utf-8"
-  //       // }),
-  //       body: JSON.stringify({
-  //         "reqType":0,
-  //         "perception": {
-  //           "inputText": {
-  //             "text": message
-  //           },
-  //           "selfInfo": {
-  //             "location": {
-  //               "city": "上海",
-  //               "province": "上海",
-  //             }
-  //           }
-  //         },
-  //         "userInfo": {
-  //           "apiKey": "fffc4ffbfcaf4b0b953c348ea925059a",
-  //           "userId": "123",
-  //         }
-  //       }),
-  //     }).then(data => {
-  //       window.console.log(data)
-  //   });
-  //   if (message.length > 0) {
-  //     this.setState({
-  //       messageList: [...this.state.messageList, {
-  //         author: 'them',
-  //         type: 'text',
-  //         data: { message }
-  //       }]
-  //     })
-  //   }
-  // }
+  }
+
+  setDescription = (data) => {
+    const temp = data.HeWeather6[0].now.tmp;
+    const cond = data.HeWeather6[0].now.cond_txt;
+    const text = data.HeWeather6[0].lifestyle[0].txt;
+
+    this.setState({
+      description: `${temp}℃, ${cond}, ${text}`,
+    })
+  }
 
   handleClick = (type) => {
     const { searchValue } = this.state
@@ -124,10 +84,10 @@ class IndexPage extends React.Component {
           <div className={styles.header}>
             <span className={styles.title}>Search</span>
           </div>
-          <div className={styles.desc}>Do Better</div>
           <Row>
             <Col xs={2} sm={4} md={6} lg={8} xl={9} />
             <Col xs={20} sm={16} md={12} lg={8} xl={6}>
+              <div className={styles.desc}>{this.state.description}</div>
               <Search
                 placeholder="Search"
                 onChange={this.handleSearchChange}
@@ -200,14 +160,6 @@ class IndexPage extends React.Component {
             </Col>
             <Col xs={2} sm={4} md={6} lg={8} xl={9} />
           </Row>
-          {/*<Launcher*/}
-            {/*agentProfile={{*/}
-              {/*teamName: 'Troy Bot',*/}
-              {/*imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png'*/}
-            {/*}}*/}
-            {/*onMessageWasSent={this._onMessageWasSent.bind(this)}*/}
-            {/*messageList={this.state.messageList}*/}
-          {/*/>*/}
         </div>
       </div>
     );
