@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Col, Input, Row } from 'antd';
+import { Button, Col, Input, Row, message } from 'antd';
 import styles from './IndexPage.less';
 import request from '../utils/request';
+import fetchJsonp from 'fetch-jsonp';
 
 const Search = Input.Search;
 
@@ -29,20 +30,40 @@ class IndexPage extends React.Component {
   }
 
   componentWillMount() {
-    request('https://free-api.heweather.com/s6/weather?location=shanghai&key=1cde689da60f410fb5a18b45dba0cc76')
-      .then((content) => {
-        this.setDescription(content.data);
-      })
-
+    this.getLocation();
   }
 
-  setDescription = (data) => {
+  getLocation = () => {
+    const url = 'http://api.map.baidu.com/location/ip?ak=MHaZmrvRxBwYFKD0G9ADTUsG7GDgSE3Y';
+    fetchJsonp(url)
+      .then(response => response.json())
+      .then((json) => {
+        this.getWeather(json.content.address);
+      }).catch((ex) => {
+        message.error('Get your location error')
+      });
+  }
+
+  getWeather = (cityName) => {
+    request('https://free-api.heweather.com/s6/weather?key=1cde689da60f410fb5a18b45dba0cc76&location=' + cityName)
+      .then((content) => {
+        this.setDescription(content.data, cityName);
+      })
+  }
+
+  setDescription = (data, cityName) => {
     const temp = data.HeWeather6[0].now.tmp;
     const cond = data.HeWeather6[0].now.cond_txt;
-    const text = data.HeWeather6[0].lifestyle[0].txt;
+    let text = '';
+    if (data.HeWeather6[0].lifestyle === undefined){
+      text = '今天请加油哦！';
+    } else {
+      text = data.HeWeather6[0].lifestyle[0].txt;
+    }
+
 
     this.setState({
-      description: `${temp}℃, ${cond}, ${text}`,
+      description: `Hello, ${cityName}今天${cond}, ${temp}℃, ${text}`,
     })
   }
 
