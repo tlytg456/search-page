@@ -34,7 +34,7 @@ class IndexPage extends React.Component {
   }
 
   getLocation = () => {
-    const url = 'http://api.map.baidu.com/location/ip?ak=MHaZmrvRxBwYFKD0G9ADTUsG7GDgSE3Y';
+    const url = 'https://api.map.baidu.com/location/ip?ak=MHaZmrvRxBwYFKD0G9ADTUsG7GDgSE3Y';
     fetchJsonp(url)
       .then(response => response.json())
       .then((json) => {
