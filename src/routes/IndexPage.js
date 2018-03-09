@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Col, Input, Row, message } from 'antd';
+import { Button, Col, Input, Row, AutoComplete, Icon } from 'antd';
 import styles from './IndexPage.less';
 import request from '../utils/request';
 import fetchJsonp from 'fetch-jsonp';
-
-const Search = Input.Search;
 
 const customStyles = {
   button: {
@@ -25,7 +23,9 @@ class IndexPage extends React.Component {
     this.state = {
       messageList: [],
       searchValue: '',
-      description: 'Do Better'
+      description: 'Hello, 今天请加油哦!!',
+      dataSource: [],
+      nextEnterToSearch: false,
     };
   }
 
@@ -40,7 +40,6 @@ class IndexPage extends React.Component {
       .then((json) => {
         this.getWeather(json.content.address);
       }).catch((ex) => {
-        message.error('Get your location error')
       });
   }
 
@@ -94,8 +93,27 @@ class IndexPage extends React.Component {
     }
   }
 
-  handleSearchChange = (e) => {
-    this.setState({ searchValue: e.target.value });
+  handleSearchChange = (value, ifGetWords) => {
+    if (ifGetWords) {
+      fetchJsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?' +
+        'cb=jQuery1102039187157806009054_1457413554466&wd=' + value,
+        {
+          jsonpCallbackFunction: 'jQuery1102039187157806009054_1457413554466',
+        })
+        .then(response => response.json())
+        .then((json) => {
+          const dataSource = [];
+          dataSource.push({value, text: value});
+          json.s.forEach((item) => {
+            dataSource.push({value: item, text: item});
+          })
+          this.setState({ dataSource });
+        }).catch((ex) => {
+        });
+    } else {
+      this.setState({ dataSource: [] });
+    }
+    this.setState({ searchValue: value, nextEnterToSearch: !ifGetWords });
   }
 
   render() {
@@ -109,13 +127,29 @@ class IndexPage extends React.Component {
             <Col xs={2} sm={4} md={6} lg={8} xl={9} />
             <Col xs={20} sm={16} md={12} lg={8} xl={6}>
               <div className={styles.desc}>{this.state.description}</div>
-              <Search
-                placeholder="Search"
-                onChange={this.handleSearchChange}
-                onSearch={() => {this.handleClick('baidu')}}
-                size={'large'}
-                value={this.state.searchValue}
-              />
+              <AutoComplete
+                dataSource={this.state.dataSource}
+                onChange={(value) => {this.handleSearchChange(value, true)}}
+                allowClear
+                autoFocus
+                backfill
+                style={{ width: '100%' }}
+                onSelect={(value) => {
+                  this.handleSearchChange(value, false);
+                }}
+              >
+                <Input
+                  placeholder="Search"
+                  style={{ height: 40, backgroundColor: 'white' }}
+                  prefix={<Icon type="search"/>}
+                  onKeyDown={(event) => {
+                    window.console.log(event.keyCode, this.state.nextEnterToSearch)
+                    if (event.keyCode === 13){
+                      this.handleClick('baidu')
+                    }
+                  }}
+                />
+              </AutoComplete>
               <Row type="flex" justify="space-around">
                 <Col xs={20} sm={12} md={12} lg={12} xl={12}>
                   <Button
