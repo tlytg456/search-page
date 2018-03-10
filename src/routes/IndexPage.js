@@ -94,7 +94,7 @@ class IndexPage extends React.Component {
   }
 
   handleSearchChange = (value, ifGetWords) => {
-    if (ifGetWords) {
+    if (ifGetWords && value != '') {
       fetchJsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?' +
         'cb=jQuery1102039187157806009054_1457413554466&wd=' + value,
         {
@@ -129,11 +129,12 @@ class IndexPage extends React.Component {
               <div className={styles.desc}>{this.state.description}</div>
               <AutoComplete
                 dataSource={this.state.dataSource}
-                onChange={(value) => {this.handleSearchChange(value, true)}}
+                onSearch={(value) => {this.handleSearchChange(value, true)}}
                 allowClear
                 autoFocus
                 backfill
                 style={{ width: '100%' }}
+                value={this.state.searchValue}
                 onSelect={(value) => {
                   this.handleSearchChange(value, false);
                 }}
@@ -143,8 +144,7 @@ class IndexPage extends React.Component {
                   style={{ height: 40, backgroundColor: 'white' }}
                   prefix={<Icon type="search"/>}
                   onKeyDown={(event) => {
-                    window.console.log(event.keyCode, this.state.nextEnterToSearch)
-                    if (event.keyCode === 13){
+                    if (event.keyCode === 13 && this.state.nextEnterToSearch){
                       this.handleClick('baidu')
                     }
                   }}
