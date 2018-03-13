@@ -4,6 +4,7 @@ import { Button, Col, Input, Row, AutoComplete, Icon } from 'antd';
 import styles from './IndexPage.less';
 import request from '../utils/request';
 import fetchJsonp from 'fetch-jsonp';
+import ChatWindow from '../components/chatWindow';
 
 const customStyles = {
   button: {
@@ -94,7 +95,7 @@ class IndexPage extends React.Component {
   }
 
   handleSearchChange = (value, ifGetWords) => {
-    if (ifGetWords && value != '') {
+    if (ifGetWords && value !== '') {
       fetchJsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?' +
         'cb=jQuery1102039187157806009054_1457413554466&wd=' + value,
         {
@@ -216,6 +217,7 @@ class IndexPage extends React.Component {
             <Col xs={2} sm={4} md={6} lg={8} xl={9} />
           </Row>
         </div>
+        <ChatWindow />
       </div>
     );
   }

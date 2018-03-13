@@ -14,7 +14,6 @@
     "react": "^16.2.0",
     "react-chat-window": "^1.0.8",
     "react-dom": "^16.2.0",
-    "react-simple-chatbot": "^0.2.9",
     "styled-components": "^3.2.0"
   },
   "devDependencies": {
