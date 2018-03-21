@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Button, Col, Input, Row, AutoComplete, Icon } from 'antd';
+import { Link } from 'dva/router';
+import { Button, Col, Input, Row, AutoComplete, Icon, Alert } from 'antd';
 import styles from './IndexPage.less';
 import request from '../utils/request';
 import fetchJsonp from 'fetch-jsonp';
@@ -238,6 +239,18 @@ class IndexPage extends React.Component {
                   >
                     狗带
                   </Button>
+                </Col>
+                <Col xs={20} sm={24} md={24} lg={24} xl={24}>
+                  <div style={{ marginTop: '24px' }}>
+                    <Alert
+                      message={<span>
+                          New function has released <Link to="/timer">Click Me</Link>
+                        </span>}
+                      type="info"
+                      closable
+                    />
+
+                  </div>
                 </Col>
               </Row>
             </Col>
