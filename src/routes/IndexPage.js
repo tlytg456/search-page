@@ -68,29 +68,56 @@ class IndexPage extends React.Component {
   }
 
   handleClick = (type) => {
-    const { searchValue } = this.state
-    switch(type)
-    {
-      case 'baidu':
-        window.location.href='https://www.baidu.com/s?wd=' + searchValue;
-        break;
-      case 'google':
-        window.location.href='https://www.google.com/search?q=' + searchValue;
-        break;
-      case 'taobao':
-        window.location.href='https://s.taobao.com/search?q=' + searchValue;
-        break;
-      case 'zhihu':
-        window.location.href='https://www.zhihu.com/search?type=content&q=' + searchValue;
-        break;
-      case 'bilibili':
-        window.location.href='https://search.bilibili.com/all?from_source=banner_search&keyword=' + searchValue;
-        break;
-      case 'goudai':
-        window.location.href='http://www.goudaitv.com/search.php?searchword=' + searchValue;
-        break;
-      default:
-        window.location.href='https://www.baidu.com/s?wd=' + searchValue;
+    const { searchValue } = this.state;
+    if (searchValue === ''){
+      switch(type)
+      {
+        case 'baidu':
+          window.location.href='https://www.baidu.com';
+          break;
+        case 'google':
+          window.location.href='https://www.google.com';
+          break;
+        case 'taobao':
+          window.location.href='https://www.taobao.com';
+          break;
+        case 'zhihu':
+          window.location.href='https://www.zhihu.com';
+          break;
+        case 'bilibili':
+          window.location.href='https://www.bilibili.com';
+          break;
+        case 'goudai':
+          window.console.log(searchValue,type);
+          window.location.href='http://www.goudaitv.com';
+          break;
+        default:
+          window.location.href='https://www.baidu.com';
+      }
+    } else {
+      switch(type)
+      {
+        case 'baidu':
+          window.location.href='https://www.baidu.com/s?wd=' + searchValue;
+          break;
+        case 'google':
+          window.location.href='https://www.google.com/search?q=' + searchValue;
+          break;
+        case 'taobao':
+          window.location.href='https://s.taobao.com/search?q=' + searchValue;
+          break;
+        case 'zhihu':
+          window.location.href='https://www.zhihu.com/search?type=content&q=' + searchValue;
+          break;
+        case 'bilibili':
+          window.location.href='https://search.bilibili.com/all?from_source=banner_search&keyword=' + searchValue;
+          break;
+        case 'goudai':
+          window.location.href='http://www.goudaitv.com/search.php?searchword=' + searchValue;
+          break;
+        default:
+          window.location.href='https://www.baidu.com/s?wd=' + searchValue;
+      }
     }
   }
 
@@ -142,7 +169,7 @@ class IndexPage extends React.Component {
               >
                 <Input
                   placeholder="Search"
-                  style={{ height: 40, backgroundColor: 'white' }}
+                  style={{ height: 40, backgroundColor: 'white', zIndex: 0 }}
                   prefix={<Icon type="search"/>}
                   onKeyDown={(event) => {
                     if (event.keyCode === 13 && this.state.nextEnterToSearch){

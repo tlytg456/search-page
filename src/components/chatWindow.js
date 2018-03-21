@@ -44,13 +44,13 @@ class ChatWindow extends React.Component {
   render() {
     return (
       <Launcher
-      agentProfile={{
-        teamName: 'Troy Bot',
-        imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
-      }}
-      onMessageWasSent={this._onMessageWasSent.bind(this)}
-      messageList={this.state.messageList}
-    />);
+        agentProfile={{
+          teamName: 'Troy Bot',
+          imageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
+        }}
+        onMessageWasSent={this._onMessageWasSent.bind(this)}
+        messageList={this.state.messageList}
+      />);
   }
 
 }
