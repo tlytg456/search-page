@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Link } from 'dva/router';
-import { Col, Row, Tabs, DatePicker, InputNumber, Form, Select } from 'antd';
+import { Col, Row, Tabs, DatePicker, InputNumber, Form, Select, TimePicker } from 'antd';
 import styles from './IndexPage.less';
 import LivePage from '../components/livePage';
+import WorthPage from '../components/worthPage';
 import Cookies from 'js-cookie';
 
 const TabPane = Tabs.TabPane;
@@ -33,6 +34,10 @@ class Timer extends React.Component {
     super();
     this.state = {
       startDate: moment(defaultDate, defaultFormat),
+      salaryNum: 3000,
+      padDay: 25,
+      startWorkTime: moment('09:00', 'HH:mm'),
+      endWorkTime: moment('18:00', 'HH:mm')
     };
   }
 
@@ -40,11 +45,43 @@ class Timer extends React.Component {
     if (Cookies.get('userBirthDate') !== undefined){
       this.setState({ startDate: moment(Cookies.get('userBirthDate'), defaultFormat) })
     }
+    if (Cookies.get('salaryNum') !== undefined){
+      this.setState({ salaryNum: parseInt(Cookies.get('salaryNum'))})
+    }
+    if (Cookies.get('padDay') !== undefined){
+      this.setState({ padDay: parseInt(Cookies.get('padDay'))})
+    }
+    if (Cookies.get('startWorkTime') !== undefined){
+      this.setState({ startWorkTime: moment(Cookies.get('startWorkTime'), 'HH:mm')})
+    }
+    if (Cookies.get('endWorkTime') !== undefined){
+      this.setState({ endWorkTime: moment(Cookies.get('endWorkTime'), 'HH:mm')})
+    }
   }
 
   handleChangeDate = (date) => {
     this.setState({ startDate: date });
     Cookies.set('userBirthDate', date.format(defaultFormat));
+  };
+
+  handleChangeSalary = (value) => {
+    this.setState({ salaryNum: value });
+    Cookies.set('salaryNum', value);
+  }
+
+  handleChangePayday = (value) => {
+    this.setState({ padDay: value });
+    Cookies.set('padDay', value);
+  }
+
+  handleChangeStartTime = (time) => {
+    this.setState({ startWorkTime: time });
+    Cookies.set('startWorkTime', time.format('HH:mm'));
+  }
+
+  handleChangeEndTime = (time) => {
+    this.setState({ endWorkTime: time });
+    Cookies.set('endWorkTime', time.format('HH:mm'));
   }
 
   getPayDay = () => {
@@ -53,7 +90,8 @@ class Timer extends React.Component {
       results.push(<Option value={i}>{i}</Option>)
     }
     return results;
-  }
+  };
+
 
   render() {
     return (
@@ -83,28 +121,71 @@ class Timer extends React.Component {
                   />
                 </TabPane>
                 <TabPane tab="Worth" key="2">
-
                   <div >
                     <Row>
                     <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                       <div style={{ marginBottom: '8px' }}>
-                        <span width={'12px'}>SALARY: </span>
+                        <div style={{display: 'inline'}}>
+                          <span>薪水数值: </span>
+                        </div>
                         <InputNumber
-                          style={{ width: 194 }}
-                          defaultValue={3000}
+                          style={{ width: 150 }}
+                          defaultValue={this.state.salaryNum}
                           min={300}
+                          onChange={this.handleChangeSalary}
                         />
                       </div>
                     </Col>
                     <Col xs={24} sm={12} md={12} lg={12} xl={12}>
                       <div style={{ marginBottom: '8px' }}>
-                        <span>PAYDAY: </span>
-                        <Select defaultValue="25" style={{ width: 194 }} >
+                        <div style={{display: 'inline'}}>
+                          <span>发薪日期: </span>
+                        </div>
+                        <Select
+                          value={this.state.padDay}
+                          style={{ width: 150 }}
+                          onChange={this.handleChangePayday}
+                        >
                           {this.getPayDay()}
                         </Select>
                       </div>
                     </Col>
+                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{display: 'inline'}}>
+                          <span>工作开始: </span>
+                        </div>
+                        <TimePicker
+                          format="HH:mm"
+                          style={{ width: 150 }}
+                          defaultValue={this.state.startWorkTime}
+                          onChange={this.handleChangeStartTime}
+                          minuteStep={15}
+                        />
+                      </div>
+                    </Col>
+
+                    <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{display: 'inline'}}>
+                          <span>工作结束: </span>
+                        </div>
+                        <TimePicker
+                          format="HH:mm"
+                          style={{ width: 150 }}
+                          defaultValue={this.state.endWorkTime}
+                          onChange={this.handleChangeEndTime}
+                          minuteStep={15}
+                        />
+                      </div>
+                    </Col>
                     </Row>
+                    <WorthPage
+                      salaryNum={this.state.salaryNum}
+                      payday={this.state.padDay}
+                      startTime={this.state.startWorkTime}
+                      endTime={this.state.endWorkTime}
+                    />
                   </div>
                 </TabPane>
                 {/*<TabPane tab="Tab 3" key="3">Content of Tab Pane 3</TabPane>*/}
