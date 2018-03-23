@@ -2,30 +2,17 @@ import React from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Link } from 'dva/router';
-import { Col, Row, Tabs, DatePicker, InputNumber, Form, Select, TimePicker } from 'antd';
+import { Col, Row, Tabs, DatePicker, InputNumber, Select, TimePicker } from 'antd';
 import styles from './IndexPage.less';
 import LivePage from '../components/livePage';
 import WorthPage from '../components/worthPage';
 import Cookies from 'js-cookie';
 
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 const defaultDate = '1994/04/06';
 const defaultFormat = 'YYYY/MM/DD';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 10 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 14 },
-  },
-};
-
 
 class Timer extends React.Component {
 
@@ -37,25 +24,29 @@ class Timer extends React.Component {
       salaryNum: 3000,
       padDay: 25,
       startWorkTime: moment('09:00', 'HH:mm'),
-      endWorkTime: moment('18:00', 'HH:mm')
+      endWorkTime: moment('18:00', 'HH:mm'),
+      tabKey: '',
     };
   }
 
   componentWillMount() {
     if (Cookies.get('userBirthDate') !== undefined){
-      this.setState({ startDate: moment(Cookies.get('userBirthDate'), defaultFormat) })
+      this.setState({ startDate: moment(Cookies.get('userBirthDate'), defaultFormat) });
     }
     if (Cookies.get('salaryNum') !== undefined){
-      this.setState({ salaryNum: parseInt(Cookies.get('salaryNum'))})
+      this.setState({ salaryNum: parseInt(Cookies.get('salaryNum'), 0)});
     }
     if (Cookies.get('padDay') !== undefined){
-      this.setState({ padDay: parseInt(Cookies.get('padDay'))})
+      this.setState({ padDay: parseInt(Cookies.get('padDay'), 0)});
     }
     if (Cookies.get('startWorkTime') !== undefined){
-      this.setState({ startWorkTime: moment(Cookies.get('startWorkTime'), 'HH:mm')})
+      this.setState({ startWorkTime: moment(Cookies.get('startWorkTime'), 'HH:mm')});
     }
     if (Cookies.get('endWorkTime') !== undefined){
-      this.setState({ endWorkTime: moment(Cookies.get('endWorkTime'), 'HH:mm')})
+      this.setState({ endWorkTime: moment(Cookies.get('endWorkTime'), 'HH:mm')});
+    }
+    if (Cookies.get('tabKey') !== undefined){
+      this.setState({ tabKey: (Cookies.get('tabKey')) });
     }
   }
 
@@ -84,6 +75,11 @@ class Timer extends React.Component {
     Cookies.set('endWorkTime', time.format('HH:mm'));
   }
 
+  handleChangeTab = (value) => {
+    this.setState({ tabKey: value });
+    Cookies.set('tabKey', value);
+  }
+
   getPayDay = () => {
     const results=[];
     for(let i = 1; i <= 30; i++){
@@ -104,7 +100,7 @@ class Timer extends React.Component {
           <Row>
             <Col xs={2} sm={4} md={6} lg={8} xl={8} />
             <Col xs={20} sm={16} md={12} lg={8} xl={8}>
-              <Tabs defaultActiveKey="live">
+              <Tabs defaultActiveKey={this.state.tabKey} onChange={this.handleChangeTab}>
                 <TabPane tab="Live" key="live">
                   <span>Your Birth: </span>
                   <DatePicker

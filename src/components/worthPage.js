@@ -2,14 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Col, Card } from 'antd';
 import styles from '../routes/IndexPage.less';
-
-const { Meta } = Card;
-
-const cardStyles = {
-  margin: '4px',
-};
 
 class WorthPage extends React.Component {
 
@@ -35,16 +28,34 @@ class WorthPage extends React.Component {
     let days = 0;
     let passDay = 0
     if (now.date() > this.props.payday){
-      let nextMonthDay = now.clone().add(1, 'months');
-      days = nextMonthDay.diff(now, 'days');
-
-      passDay = now.date() - this.props.payday;
+      let lastPayDay = now.clone().date(this.props.payday);
+      let nextPayDay = lastPayDay.clone().add(1, 'months');
+      let date = lastPayDay;
+      while(date.dayOfYear() !== nextPayDay.dayOfYear()) {
+        if (date.isoWeekday() !== 6 && date.isoWeekday() !== 7){
+          days++;
+        }
+        if (date.isoWeekday() !== 6 && date.isoWeekday() !== 7
+          && date.dayOfYear() < now.dayOfYear()){
+          passDay++;
+        }
+        date = date.add(1, 'days');
+      }
 
     } else {
-      let BeforeMonthDay = now.clone().add(-1, 'months')
-      days = now.diff(BeforeMonthDay, 'days');
-
-      passDay = days - (this.props.payday - now.date());
+      let lastPayDay = now.clone().date(this.props.payday).add(-1, 'months');
+      let nextPayDay = lastPayDay.clone().add(1, 'months');
+      let date = lastPayDay;
+      while(date.dayOfYear() !== nextPayDay.dayOfYear()) {
+        if (date.isoWeekday() !== 6 && date.isoWeekday() !== 7){
+          days++;
+        }
+        if (date.isoWeekday() !== 6 && date.isoWeekday() !== 7
+          && date.dayOfYear() < now.dayOfYear()){
+          passDay++;
+        }
+        date = date.add(1, 'days');
+      }
     }
 
     let workSeconds = this.props.endTime.diff(this.props.startTime, 'seconds');
@@ -67,14 +78,16 @@ class WorthPage extends React.Component {
     return (
       <div>
         <div>
-          <div className={styles.timerDesc}>
-            Today you have earned
-            <span style={{color: '#E08031', fontSize: '24px'}}>
+          <div className={styles.timerDesc} style={{marginBottom: '12px'}}>
+            今天, 你赚了
+             <span style={{color: '#E08031', fontSize: '24px'}}>
               {Math.round((this.state.workSeconds / (this.state.totalDays*this.state.totalSecond)) * this.props.salaryNum * 10000) / 10000}</span> Yuan
           </div>
-          {/*<div className={styles.timerDesc}>*/}
-            {/*You are <span style={{color: '#E08031', fontSize: '24px'}}>{this.state.exectYear}</span> years old*/}
-          {/*</div>*/}
+          <div className={styles.timerDesc}>
+            这个月, 你赚了
+             <span style={{color: '#E08031', fontSize: '24px'}}>
+               {Math.round(((this.state.workSeconds + (this.state.passDay*this.state.totalSecond))  / (this.state.totalDays*this.state.totalSecond)) * this.props.salaryNum * 10000) / 10000}</span> yuan
+          </div>
         </div>
       </div>
 

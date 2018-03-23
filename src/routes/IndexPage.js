@@ -89,7 +89,6 @@ class IndexPage extends React.Component {
           window.location.href='https://www.bilibili.com';
           break;
         case 'goudai':
-          window.console.log(searchValue,type);
           window.location.href='http://www.goudaitv.com';
           break;
         default:

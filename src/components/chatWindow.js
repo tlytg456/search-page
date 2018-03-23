@@ -21,7 +21,6 @@ class ChatWindow extends React.Component {
   }
 
   _sendMessage = (message) => {
-    window.console.log(message)
     const url = 'https://api.jisuapi.com/iqa/query?appkey=56369ab23c08ee39&question=' + message.data.text;
     let responseMessage = '';
     fetchJsonp(url)
