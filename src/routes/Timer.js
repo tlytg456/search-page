@@ -25,7 +25,7 @@ class Timer extends React.Component {
       padDay: 25,
       startWorkTime: moment('09:00', 'HH:mm'),
       endWorkTime: moment('18:00', 'HH:mm'),
-      tabKey: '',
+      tabKey: 'live',
     };
   }
 
