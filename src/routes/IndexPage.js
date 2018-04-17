@@ -113,7 +113,7 @@ class IndexPage extends React.Component {
           window.location.href='https://search.bilibili.com/all?from_source=banner_search&keyword=' + searchValue;
           break;
         case 'goudai':
-          window.location.href='http://www.goudaitv.com/search.php?searchword=' + searchValue;
+          window.location.href='http://www.goudaitv.com/index.php?m=vod-search&wd=' + searchValue;
           break;
         default:
           window.location.href='https://www.baidu.com/s?wd=' + searchValue;
