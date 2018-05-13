@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import { Button, Col, Input, Row, AutoComplete, Icon, Alert } from 'antd';
+import moment from 'moment';
 import styles from './IndexPage.less';
 import request from '../utils/request';
 import fetchJsonp from 'fetch-jsonp';
@@ -53,18 +54,42 @@ class IndexPage extends React.Component {
   }
 
   setDescription = (data, cityName) => {
-    const temp = data.HeWeather6[0].now.tmp;
+    const minTemp = data.HeWeather6[0].daily_forecast[0].tmp_min;
+    const maxTemp = data.HeWeather6[0].daily_forecast[0].tmp_max;
     const cond = data.HeWeather6[0].now.cond_txt;
     let text = '';
-    if (data.HeWeather6[0].lifestyle === undefined){
-      text = '今天请加油哦！';
-    } else {
-      text = data.HeWeather6[0].lifestyle[0].txt;
+
+    const weekDay = new moment().day();
+    switch(weekDay)
+    {
+      case 0:
+        text = '这是最后的周末时光，明天上班了233333~';
+        break;
+      case 1:
+        text = '新的一周，加油哦~';
+        break;
+      case 2:
+        text = '周二周二周二，累不累~';
+        break;
+      case 3:
+        text = '周中了，不好意思，你还要工作3天~';
+        break;
+      case 4:
+        text = '距离周末倒计时.....2天~';
+        break;
+      case 5:
+        text = '坚持一下，马上放假了呢~';
+        break;
+      case 6:
+        text = '哇，放假了，周末愉快~';
+        break;
+      default:
+        text = '今天请加油嘿嘿~';
     }
 
 
     this.setState({
-      description: `Hello, ${cityName}今天${cond}, ${temp}℃, ${text}`,
+      description: `Hello, ${cityName}今天${cond}, ${minTemp}℃ - ${maxTemp}℃, ${text}`,
     })
   }
 
